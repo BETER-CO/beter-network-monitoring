@@ -1,6 +1,17 @@
 # BETER Network Monitoring (BNM)
 
-This repository contains a set of preconfigured tools to monitor network.
+This repository contains a set of preconfigured tools to monitor the network.
+
+Services launched:
+- Grafana
+- Prometheus
+- Smokeping-probe
+
+Metrics available on the dashboard:
+- Packet loss.
+- Ping probe latencies (histogram and average).
+
+![Grafana Dashboard](grafana.jpg)
 
 ## Prerequisites
 
@@ -62,7 +73,7 @@ $ docker compose up -d
 
 4. Explore metrics in Grafana
 
-Visit http://localhost:3000/ and log in using default or custom credentials. Specify the right port if you redefine it.
+Visit [http://localhost:3000/d/i5aRaLaik/smoke-ping?orgId=1](http://localhost:3000/d/i5aRaLaik/smoke-ping?orgId=1) and log in using default or custom credentials. Specify the right port if you redefine it.
 
 ## Cleaning
 
