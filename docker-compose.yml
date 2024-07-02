@@ -1,0 +1,55 @@
+version: '3.7'
+
+name: "bnm"
+
+services:
+  grafana:
+    image: "grafana/grafana"
+    container_name: "${COMPOSE_PROJECT_NAME}-grafana"
+    hostname: "grafana"
+    ports:
+      - "${BNM_GRAFANA_PORT:-3000}:3000"
+    restart: "unless-stopped"
+    environment:
+      - "GF_SECURITY_ADMIN_USER=${BNM_GRAFANA_USER:-admin}"
+      - "GF_SECURITY_ADMIN_PASSWORD=${BNM_GRAFANA_PASSWORD:-admin}"
+    volumes:
+      - "./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources"
+      - "./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards"
+      - "./grafana/dashboards:/var/lib/grafana/dashboards"
+    networks:
+      - "bnm-network"
+
+  prometheus:
+    image: "prom/prometheus"
+    container_name: "${COMPOSE_PROJECT_NAME}-prometheus"
+    hostname: "prometheus"
+    ports:
+      - 9090
+    restart: "unless-stopped"
+    volumes:
+      - "./prometheus:/etc/prometheus"
+      - "bnm-prometheus-data:/prometheus"
+    networks:
+      - "bnm-network"
+
+  smokeping-prober:
+    image: "quay.io/superq/smokeping-prober:latest"
+    container_name: "${COMPOSE_PROJECT_NAME}-smokeping-prober"
+    hostname: "smokeping-prober"
+    ports:
+      - 9374
+    restart: "unless-stopped"
+    command: "--config.file=/etc/smokeping-prober/config.yaml --privileged"
+    volumes:
+      - "./smokeping-prober:/etc/smokeping-prober"
+    networks:
+      - "bnm-network"
+
+networks: 
+  bnm-network:
+    driver: bridge  
+
+volumes:
+  bnm-prometheus-data: {}
+
